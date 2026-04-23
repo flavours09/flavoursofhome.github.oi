@@ -5,155 +5,178 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body { font-family: Arial; margin:0; background:#fff8e1; }
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f5f5f5;
+}
 
 header {
-    background:#4CAF50;
+    background:#2e7d32;
     color:white;
     padding:15px;
     text-align:center;
+    font-size:22px;
 }
-
-.container { padding:15px; }
 
 .products {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-    gap:15px;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap:20px;
+    padding:20px;
 }
 
 .card {
     background:white;
+    border-radius:12px;
     padding:10px;
-    border-radius:10px;
     text-align:center;
-    box-shadow:0 0 10px #ccc;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 .card img {
     width:100%;
     height:180px;
     object-fit:cover;
-}
-
-button {
-    background:#25D366;
-    color:white;
-    padding:8px;
-    border:none;
-    margin:5px;
-    cursor:pointer;
-}
-
-.cart {
-    position:fixed;
-    right:10px;
-    top:10px;
-    background:white;
-    padding:10px;
     border-radius:10px;
-    box-shadow:0 0 10px gray;
+}
+
+.card h3 {
+    margin:10px 0 5px;
 }
 
 .qty {
     display:flex;
     justify-content:center;
     align-items:center;
+    gap:10px;
+    margin:10px 0;
 }
 
 .qty button {
     width:30px;
+    height:30px;
+    font-size:18px;
+    border:none;
+    background:#ddd;
+    cursor:pointer;
 }
+
+.add {
+    background:#ff9800;
+    color:white;
+    border:none;
+    padding:8px;
+    width:100%;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.cartBox {
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    background:#2e7d32;
+    color:white;
+    padding:12px;
+    border-radius:10px;
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>Flavours Of Home</h1>
-<p>Homemade Goodness</p>
+Flavours Of Home 🍲
 </header>
-
-<div class="cart">
-🛒 Cart: <span id="cartCount">0</span><br>
-<button onclick="checkout()">Order</button>
-</div>
-
-<div class="container">
-
-<h2>Products</h2>
 
 <div class="products">
 
-<!-- Product -->
-<div class="card">
-<img src="putnalu.jpg">
-<h3>Putnalu Podi</h3>
-<p>₹140</p>
-
-<div class="qty">
-<button onclick="changeQty('Putnalu', -1)">-</button>
-<span id="Putnalu">0</span>
-<button onclick="changeQty('Putnalu', 1)">+</button>
-</div>
-
-<button onclick="addToCart('Putnalu Podi')">Add to Cart</button>
-</div>
-
-<div class="card">
-<img src="palli.jpg">
-<h3>Palli Podi</h3>
-<p>₹160</p>
-
-<div class="qty">
-<button onclick="changeQty('Palli', -1)">-</button>
-<span id="Palli">0</span>
-<button onclick="changeQty('Palli', 1)">+</button>
-</div>
-
-<button onclick="addToCart('Palli Podi')">Add to Cart</button>
-</div>
-
-</div>
-
-</div>
+<!-- PRODUCT TEMPLATE -->
 
 <script>
+const products = [
+"putnalu","palli","nalla","kandi","karivepaku","pulihora",
+"sambar","rasam","garam",
+"tomato","gongura","ginger","avakaya","chicken","plant"
+];
+
+const names = {
+putnalu:"Putnalu Podi",
+palli:"Palli Podi",
+nalla:"Nalla Podi",
+kandi:"Kandi Podi",
+karivepaku:"Karivepaku Podi",
+pulihora:"Pulihora Mix",
+sambar:"Sambar Powder",
+rasam:"Rasam Powder",
+garam:"Garam Masala",
+tomato:"Tomato Pickle",
+gongura:"Gongura Pickle",
+ginger:"Ginger Pickle",
+avakaya:"Avakaya Pickle",
+chicken:"Chicken Pickle",
+plant:"Protein Powder"
+};
+
 let cart = {};
-let totalItems = 0;
+let total = 0;
 
-function changeQty(id, val) {
+function render(){
+    let html = "";
+    products.forEach(p=>{
+        html += `
+        <div class="card">
+            <img src="${p}.jpg">
+            <h3>${names[p]}</h3>
+
+            <div class="qty">
+                <button onclick="qty('${p}',-1)">-</button>
+                <span id="${p}">0</span>
+                <button onclick="qty('${p}',1)">+</button>
+            </div>
+
+            <button class="add" onclick="add('${p}')">Add to Cart</button>
+        </div>
+        `;
+    });
+    document.querySelector(".products").innerHTML = html;
+}
+
+function qty(id,val){
     let el = document.getElementById(id);
-    let qty = parseInt(el.innerText) + val;
-    if(qty < 0) qty = 0;
-    el.innerText = qty;
+    let v = parseInt(el.innerText)+val;
+    if(v<0) v=0;
+    el.innerText = v;
 }
 
-function addToCart(name) {
-    let id = name.split(" ")[0];
-    let qty = parseInt(document.getElementById(id).innerText);
+function add(id){
+    let q = parseInt(document.getElementById(id).innerText);
+    if(q==0){ alert("Select quantity"); return; }
 
-    if(qty === 0) {
-        alert("Select quantity first");
-        return;
+    cart[id]=q;
+    total += q;
+    document.getElementById("cartCount").innerText = total;
+}
+
+function checkout(){
+    let msg="Hi I want:%0A";
+    for(let k in cart){
+        msg += names[k]+" - "+cart[k]+"%0A";
     }
-
-    cart[name] = qty;
-    totalItems += qty;
-
-    document.getElementById("cartCount").innerText = totalItems;
+    window.open("https://wa.me/918978992637?text="+msg);
 }
 
-function checkout() {
-    let msg = "Hi, I want to order:%0A";
-
-    for(let item in cart) {
-        msg += item + " - " + cart[item] + "%0A";
-    }
-
-    window.open("https://wa.me/918978992637?text=" + msg);
-}
+window.onload = render;
 </script>
+
+</div>
+
+<div class="cartBox">
+🛒 <span id="cartCount">0</span>
+<button onclick="checkout()">Order</button>
+</div>
 
 </body>
 </html>
