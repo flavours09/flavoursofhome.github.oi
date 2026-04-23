@@ -5,93 +5,124 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body { margin:0; font-family: Arial; background:#f5f5f5; }
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background:#f2f2f2;
+}
 
+/* HEADER */
 header {
-    background:#2e7d32;
+    background:#ff6f00;
     color:white;
     padding:15px;
     text-align:center;
     font-size:22px;
+    font-weight:bold;
 }
 
+/* SEARCH */
 .searchBar {
+    position:sticky;
+    top:0;
+    background:white;
     padding:10px;
-    text-align:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .searchBar input {
-    width:90%;
+    width:100%;
     padding:10px;
-    border-radius:20px;
+    border-radius:25px;
     border:1px solid #ccc;
 }
 
-.filters {
-    text-align:center;
-    margin-bottom:10px;
+/* CATEGORY */
+.categories {
+    display:flex;
+    overflow-x:auto;
+    background:white;
+    padding:10px;
 }
 
-.filters button {
-    margin:5px;
-    padding:8px 12px;
+.categories button {
+    margin-right:10px;
+    padding:8px 15px;
     border:none;
-    border-radius:5px;
-    background:#ddd;
+    border-radius:20px;
+    background:#eee;
     cursor:pointer;
 }
 
+/* PRODUCTS */
 .products {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap:20px;
-    padding:20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap:15px;
+    padding:15px;
 }
 
 .card {
     background:white;
     border-radius:12px;
-    padding:10px;
-    text-align:center;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    overflow:hidden;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
 
 .card img {
     width:100%;
-    height:180px;
+    height:150px;
     object-fit:cover;
 }
 
+.card-body {
+    padding:10px;
+}
+
+.card h3 {
+    margin:5px 0;
+    font-size:16px;
+}
+
+.price {
+    color:#388e3c;
+    font-weight:bold;
+}
+
+/* QTY */
 .qty {
     display:flex;
-    justify-content:center;
-    gap:10px;
+    justify-content:space-between;
     margin:10px 0;
 }
 
 .qty button {
     width:30px;
     height:30px;
+    border:none;
+    background:#ddd;
 }
 
+/* ADD BUTTON */
 .addBtn {
-    background:#ff9800;
+    width:100%;
+    background:#ff6f00;
     color:white;
     padding:8px;
     border:none;
-    width:100%;
     border-radius:6px;
 }
 
-.cartBtn {
+/* CART */
+.cartBar {
     position:fixed;
-    top:15px;
-    right:15px;
-    background:#ff9800;
+    bottom:0;
+    width:100%;
+    background:#388e3c;
     color:white;
-    padding:10px;
-    border-radius:50%;
-    cursor:pointer;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
 }
 
 .cartBox {
@@ -101,20 +132,11 @@ header {
     width:300px;
     height:100%;
     background:white;
-    box-shadow:-2px 0 10px gray;
     padding:15px;
+    box-shadow:-2px 0 10px gray;
     transition:0.3s;
-    overflow:auto;
 }
 
-.cartItem {
-    margin-bottom:10px;
-}
-
-.total {
-    font-weight:bold;
-    margin-top:10px;
-}
 </style>
 </head>
 
@@ -123,25 +145,28 @@ header {
 <header>Flavours Of Home 🍲</header>
 
 <div class="searchBar">
-<input type="text" placeholder="Search products..." onkeyup="searchProducts(this.value)">
+<input type="text" placeholder="Search..." onkeyup="searchProducts(this.value)">
 </div>
 
-<div class="filters">
+<div class="categories">
 <button onclick="filter('all')">All</button>
 <button onclick="filter('podi')">Powders</button>
 <button onclick="filter('pickle')">Pickles</button>
 <button onclick="filter('special')">Special</button>
 </div>
 
-<div class="cartBtn" onclick="toggleCart()">🛒</div>
-
 <div class="products" id="products"></div>
+
+<div class="cartBar" onclick="toggleCart()">
+<span id="cartCount">0 items</span>
+<span>₹<span id="total">0</span> → View Cart</span>
+</div>
 
 <div class="cartBox" id="cartBox">
 <h3>Your Cart</h3>
 <div id="cartItems"></div>
-<div class="total">Total: ₹<span id="total">0</span></div>
-<button onclick="checkout()">Order</button>
+<h4>Total: ₹<span id="total2">0</span></h4>
+<button onclick="checkout()">Order on WhatsApp</button>
 </div>
 
 <script>
@@ -155,111 +180,105 @@ const items = [
 ["sambar","Sambar Powder",150,"podi"],
 ["rasam","Rasam Powder",150,"podi"],
 ["garam","Garam Masala",150,"podi"],
-
 ["tomato","Tomato Pickle",280,"pickle"],
 ["gongura","Gongura Pickle",330,"pickle"],
 ["ginger","Ginger Pickle",330,"pickle"],
 ["avakaya","Avakaya Pickle",330,"pickle"],
 ["chicken","Chicken Pickle",640,"pickle"],
-
 ["plant","Protein Powder",900,"special"]
 ];
 
-let filtered = [...items];
-let cart = {};
+let filtered=[...items];
+let cart={};
 
 function render(){
-    let html="";
-    filtered.forEach(i=>{
-        html+=`
-        <div class="card">
-        <img src="${i[0]}.jpg">
-        <h3>${i[1]}</h3>
-        <p>₹${i[2]}</p>
+let html="";
+filtered.forEach(i=>{
+html+=`
+<div class="card">
+<img src="${i[0]}.jpg">
+<div class="card-body">
+<h3>${i[1]}</h3>
+<div class="price">₹${i[2]}</div>
 
-        <div class="qty">
-        <button onclick="qty('${i[0]}',-1)">-</button>
-        <span id="${i[0]}">1</span>
-        <button onclick="qty('${i[0]}',1)">+</button>
-        </div>
+<div class="qty">
+<button onclick="qty('${i[0]}',-1)">-</button>
+<span id="${i[0]}">1</span>
+<button onclick="qty('${i[0]}',1)">+</button>
+</div>
 
-        <button class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
-        </div>
-        `;
-    });
-    document.getElementById("products").innerHTML=html;
+<button class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
+</div>
+</div>
+`;
+});
+document.getElementById("products").innerHTML=html;
 }
 
 function qty(id,val){
-    let el=document.getElementById(id);
-    let q=parseInt(el.innerText)+val;
-    if(q<1) q=1;
-    el.innerText=q;
+let el=document.getElementById(id);
+let q=parseInt(el.innerText)+val;
+if(q<1) q=1;
+el.innerText=q;
 }
 
 function add(id,name,price){
-    let q=parseInt(document.getElementById(id).innerText);
+let q=parseInt(document.getElementById(id).innerText);
 
-    if(cart[id]){
-        cart[id].qty+=q;
-    } else {
-        cart[id]={name,price,qty:q};
-    }
+if(cart[id]){
+cart[id].qty+=q;
+}else{
+cart[id]={name,price,qty:q};
+}
 
-    updateCart();
+updateCart();
 }
 
 function updateCart(){
-    let html="";
-    let total=0;
+let html="";
+let total=0;
+let count=0;
 
-    for(let k in cart){
-        let i=cart[k];
-        let sub=i.qty*i.price;
-        total+=sub;
+for(let k in cart){
+let i=cart[k];
+let sub=i.qty*i.price;
+total+=sub;
+count+=i.qty;
 
-        html+=`
-        <div class="cartItem">
-        ${i.name} (${i.qty}) - ₹${sub}
-        <button onclick="removeItem('${k}')">❌</button>
-        </div>
-        `;
-    }
-
-    document.getElementById("cartItems").innerHTML=html;
-    document.getElementById("total").innerText=total;
+html+=`${i.name} (${i.qty}) - ₹${sub}<br>`;
 }
 
-function removeItem(id){
-    delete cart[id];
-    updateCart();
+document.getElementById("cartItems").innerHTML=html;
+document.getElementById("total").innerText=total;
+document.getElementById("total2").innerText=total;
+document.getElementById("cartCount").innerText=count+" items";
 }
 
 function toggleCart(){
-    let box=document.getElementById("cartBox");
-    box.style.right = (box.style.right=="0px") ? "-350px" : "0px";
+let box=document.getElementById("cartBox");
+box.style.right = (box.style.right=="0px")?"-350px":"0px";
 }
 
 function checkout(){
-    let msg="Hi I want:%0A";
-    for(let k in cart){
-        let i=cart[k];
-        msg+=i.name+" - "+i.qty+" pcs - ₹"+(i.qty*i.price)+"%0A";
-    }
-    msg+="Total: ₹"+document.getElementById("total").innerText;
+let msg="Hi I want:%0A";
+for(let k in cart){
+let i=cart[k];
+msg+=i.name+" - "+i.qty+" pcs - ₹"+(i.qty*i.price)+"%0A";
+}
+msg+="Total: ₹"+document.getElementById("total").innerText;
 
-    window.open("https://wa.me/918978992637?text="+msg);
+window.open("https://wa.me/918978992637?text="+msg);
 }
 
 function filter(type){
-    if(type=="all") filtered=[...items];
-    else filtered=items.filter(i=>i[3]==type);
-    render();
+if(type=="all") filtered=[...items];
+else filtered=items.filter(i=>i[3]==type);
+render();
 }
 
 function searchProducts(text){
-    filtered = items.filter(i=>i[1].toLowerCase().includes(text.toLowerCase()));
-    render();
+filtered=items.filter(i=>i[1].toLowerCase().includes(text.toLowerCase()));
+render();
 }
 
 window.onload=render;
