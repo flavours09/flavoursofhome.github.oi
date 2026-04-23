@@ -1,35 +1,159 @@
-<!DOCTYPE html><html><head><title>Flavours Of Home</title><meta name="viewport" content="width=device-width, initial-scale=1">
-<style>body { font-family: Arial; margin:0; background:#fff8e1; }
-header {    background:#4CAF50;    color:white;    padding:15px;    text-align:center;}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flavours Of Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: Arial; margin:0; background:#fff8e1; }
+
+header {
+    background:#4CAF50;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
 .container { padding:15px; }
-.products {    display:grid;    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));    gap:15px;}
-.card {    background:white;    padding:10px;    border-radius:10px;    text-align:center;    box-shadow:0 0 10px #ccc;}
-.card img {    width:100%;    height:180px;    object-fit:cover;}
-button {    background:#25D366;    color:white;    padding:8px;    border:none;    margin:5px;    cursor:pointer;}
-.cart {    position:fixed;    right:10px;    top:10px;    background:white;    padding:10px;    border-radius:10px;    box-shadow:0 0 10px gray;}
-.qty {    display:flex;    justify-content:center;    align-items:center;}
-.qty button {    width:30px;}</style></head>
+
+.products {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap:15px;
+}
+
+.card {
+    background:white;
+    padding:10px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 0 10px #ccc;
+}
+
+.card img {
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+button {
+    background:#25D366;
+    color:white;
+    padding:8px;
+    border:none;
+    margin:5px;
+    cursor:pointer;
+}
+
+.cart {
+    position:fixed;
+    right:10px;
+    top:10px;
+    background:white;
+    padding:10px;
+    border-radius:10px;
+    box-shadow:0 0 10px gray;
+}
+
+.qty {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.qty button {
+    width:30px;
+}
+</style>
+</head>
+
 <body>
-<header><h1>Flavours Of Home</h1><p>Homemade Goodness</p></header>
-<div class="cart"> Cart: <span id="cartCount">0</span><br><button onclick="checkout()">Order</button></div>
+
+<header>
+<h1>Flavours Of Home</h1>
+<p>Homemade Goodness</p>
+</header>
+
+<div class="cart">
+🛒 Cart: <span id="cartCount">0</span><br>
+<button onclick="checkout()">Order</button>
+</div>
+
 <div class="container">
+
 <h2>Products</h2>
+
 <div class="products">
-<!-- Product --><div class="card"><img src="putnalu.jpg"><h3>Putnalu Podi</h3><p>₹140</p>
-<div class="qty"><button onclick="changeQty('Putnalu', -1)">-</button><span id="Putnalu">0</span><button onclick="changeQty('Putnalu', 1)">+</button></div>
-<button onclick="addToCart('Putnalu Podi')">Add to Cart</button></div>
-<div class="card"><img src="palli.jpg"><h3>Palli Podi</h3><p>₹160</p>
-<div class="qty"><button onclick="changeQty('Palli', -1)">-</button><span id="Palli">0</span><button onclick="changeQty('Palli', 1)">+</button></div>
-<button onclick="addToCart('Palli Podi')">Add to Cart</button></div>
+
+<!-- Product -->
+<div class="card">
+<img src="putnalu.jpg">
+<h3>Putnalu Podi</h3>
+<p>₹140</p>
+
+<div class="qty">
+<button onclick="changeQty('Putnalu', -1)">-</button>
+<span id="Putnalu">0</span>
+<button onclick="changeQty('Putnalu', 1)">+</button>
 </div>
+
+<button onclick="addToCart('Putnalu Podi')">Add to Cart</button>
 </div>
-<script>let cart = {};let totalItems = 0;
-function changeQty(id, val) {    let el = document.getElementById(id);    let qty = parseInt(el.innerText) + val;    if(qty < 0) qty = 0;    el.innerText = qty;}
-function addToCart(name) {    let id = name.split(" ")[0];    let qty = parseInt(document.getElementById(id).innerText);
-    if(qty === 0) {        alert("Select quantity first");        return;    }
-    cart[name] = qty;    totalItems += qty;
-    document.getElementById("cartCount").innerText = totalItems;}
-function checkout() {    let msg = "Hi, I want to order:%0A";
-    for(let item in cart) {        msg += item + " - " + cart[item] + "%0A";    }
-    window.open("https://wa.me/91XXXXXXXXXX?text=" + msg);}</script>
-</body></html>
+
+<div class="card">
+<img src="palli.jpg">
+<h3>Palli Podi</h3>
+<p>₹160</p>
+
+<div class="qty">
+<button onclick="changeQty('Palli', -1)">-</button>
+<span id="Palli">0</span>
+<button onclick="changeQty('Palli', 1)">+</button>
+</div>
+
+<button onclick="addToCart('Palli Podi')">Add to Cart</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+let cart = {};
+let totalItems = 0;
+
+function changeQty(id, val) {
+    let el = document.getElementById(id);
+    let qty = parseInt(el.innerText) + val;
+    if(qty < 0) qty = 0;
+    el.innerText = qty;
+}
+
+function addToCart(name) {
+    let id = name.split(" ")[0];
+    let qty = parseInt(document.getElementById(id).innerText);
+
+    if(qty === 0) {
+        alert("Select quantity first");
+        return;
+    }
+
+    cart[name] = qty;
+    totalItems += qty;
+
+    document.getElementById("cartCount").innerText = totalItems;
+}
+
+function checkout() {
+    let msg = "Hi, I want to order:%0A";
+
+    for(let item in cart) {
+        msg += item + " - " + cart[item] + "%0A";
+    }
+
+    window.open("https://wa.me/918978992637?text=" + msg);
+}
+</script>
+
+</body>
+</html>
