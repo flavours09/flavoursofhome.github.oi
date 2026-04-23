@@ -11,6 +11,7 @@ body {
     background:#f2f2f2;
 }
 
+/* HEADER */
 header {
     background:#ff6f00;
     color:white;
@@ -52,133 +53,160 @@ header {
     grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
     gap:15px;
     padding:15px;
-    padding-bottom:150px;
+    padding-bottom:160px;
 }
 
 /* CARD */
 .card {
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,0.12);
+    display:flex;
+    flex-direction:column;
+    transition:0.2s;
 }
 
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    transform:translateY(-3px);
 }
 
 .card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    background: #f8f8f8;
+    width:100%;
+    height:160px;
+    object-fit:cover;
 }
 
 .card-body {
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    padding:10px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
 .card-body h3 {
-    font-size: 15px;
-    margin: 0;
-    font-weight: 600;
-    color: #111;
+    font-size:15px;
+    margin:0;
+    font-weight:600;
 }
 
 .price {
-    font-size: 16px;
-    font-weight: 700;
-    color: #B12704;
+    font-size:16px;
+    font-weight:700;
+    color:#B12704;
 }
 
 /* QTY */
 .qty {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f3f3f3;
-    border-radius: 8px;
-    padding: 4px 6px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#f3f3f3;
+    border-radius:8px;
+    padding:4px 6px;
 }
 
 .qty button {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background: white;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
+    width:28px;
+    height:28px;
+    border:none;
+    background:white;
+    border-radius:6px;
+    font-size:16px;
 }
 
-.qty span {
-    font-weight: 600;
-}
-
-/* BUTTON */
+/* ADD BUTTON */
 .addBtn {
-    width: 100%;
-    background: #FFD814;
-    color: #111;
-    padding: 8px;
-    border: none;
-    border-radius: 20px;
-    font-weight: 600;
-    cursor: pointer;
+    width:100%;
+    background:#FFD814;
+    color:#111;
+    padding:8px;
+    border:none;
+    border-radius:20px;
+    font-weight:600;
+    cursor:pointer;
 }
 
-.addBtn:hover {
-    background: #F7CA00;
-}
-
-/* CART BAR */
+/* =========================
+   CART BAR (PREMIUM)
+========================= */
 .cartBar {
-    position: fixed;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
+    position:fixed;
+    bottom:12px;
+    left:12px;
+    right:12px;
 
-    background: linear-gradient(135deg, #1b5e20, #43a047);
-    color: white;
+    background:linear-gradient(135deg,#1b5e20,#43a047);
+    color:white;
 
-    padding: 14px 16px;
+    padding:14px 16px;
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 
-    border-radius: 18px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
 
-    font-size: 15px;
-    font-weight: 500;
+    font-weight:500;
 
-    animation: floatBar 3s ease-in-out infinite;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    z-index: 9999;
+    z-index:9999;
 }
 
-@keyframes floatBar {
-    0%,100% { transform: translateY(0px); }
-    50% { transform: translateY(-3px); }
+/* CART LEFT (badge area) */
+.cartLeft {
+    position:relative;
+    font-weight:600;
+    cursor:pointer;
 }
 
-.cartBar.hide {
-    transform: translateY(120%);
-    opacity: 0;
+/* RED BADGE */
+#cartBadge {
+    position:absolute;
+    top:-8px;
+    right:-18px;
+    background:red;
+    color:white;
+    font-size:12px;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
 }
 
-.cartBar span:last-child {
-    background: rgba(255,255,255,0.15);
-    padding: 6px 12px;
-    border-radius: 12px;
+/* =========================
+   MINI CART (HOVER POPUP)
+========================= */
+.miniCart {
+    position:absolute;
+    bottom:60px;
+    left:12px;
+    width:280px;
+    background:white;
+    color:black;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    padding:10px;
+    display:none;
+    max-height:300px;
+    overflow:auto;
+}
+
+.cartLeft:hover .miniCart {
+    display:block;
+}
+
+/* MINI ITEM */
+.miniItem {
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    margin-bottom:6px;
+    border-bottom:1px solid #eee;
+    padding-bottom:4px;
 }
 
 /* CART BOX */
@@ -200,24 +228,7 @@ header {
     right:0;
 }
 
-.cartItem {
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:10px;
-}
-
-.cartItem button {
-    background:red;
-    color:white;
-    border:none;
-    border-radius:5px;
-}
-
 /* FORM */
-.formBox {
-    margin-top:15px;
-}
-
 .formBox input,
 .formBox textarea {
     width:100%;
@@ -236,7 +247,6 @@ header {
     padding:12px 20px;
     border-radius:25px;
     display:none;
-    z-index:10000;
 }
 </style>
 </head>
@@ -259,8 +269,17 @@ header {
 <div class="products" id="products"></div>
 
 <!-- CART BAR -->
-<div class="cartBar" onclick="toggleCart()">
-    <div id="cartCount">0 items</div>
+<div class="cartBar">
+
+    <!-- LEFT CART WITH BADGE + MINI CART -->
+    <div class="cartLeft" onclick="toggleCart()">
+        🛒 Cart
+        <span id="cartBadge">0</span>
+
+        <!-- MINI CART POPUP -->
+        <div class="miniCart" id="miniCart"></div>
+    </div>
+
     <div>₹<span id="total">0</span> • View Cart →</div>
 </div>
 
@@ -274,11 +293,7 @@ header {
 
 <div class="formBox">
 <input type="text" id="custName" placeholder="Your Name">
-
-<!-- ✅ PHONE VALIDATION -->
-<input type="tel" id="custPhone" placeholder="Phone Number"
-oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')">
-
+<input type="tel" id="custPhone" placeholder="Phone Number">
 <textarea id="custAddress" placeholder="Delivery Address"></textarea>
 </div>
 
@@ -327,7 +342,7 @@ html+=`
 <button onclick="qty('${i[0]}',1)">+</button>
 </div>
 
-<button id="btn_${i[0]}" class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
+<button onclick="add('${i[0]}','${i[1]}',${i[2]})" class="addBtn">Add</button>
 </div>
 </div>`;
 });
@@ -345,15 +360,12 @@ function add(id,name,price){
 let q=parseInt(document.getElementById(id).innerText);
 cart[id]={name,price,qty:q};
 
-document.getElementById("btn_"+id).innerText="Added ✔";
-document.getElementById("btn_"+id).style.background="#43a047";
-
 showToast(name+" added");
 updateCart();
 }
 
 function updateCart(){
-let html="",total=0,count=0;
+let html="",mini="",total=0,count=0;
 
 for(let k in cart){
 let i=cart[k];
@@ -361,43 +373,40 @@ let sub=i.qty*i.price;
 total+=sub;
 count+=i.qty;
 
-html+=`
-<div class="cartItem">
-<span>${i.name} (${i.qty}) - ₹${sub}</span>
-<button onclick="removeItem('${k}')">❌</button>
+html+=`<div>${i.name} x${i.qty} - ₹${sub}</div>`;
+
+mini+=`<div class="miniItem">
+<span>${i.name} x${i.qty}</span>
+<span>₹${sub}</span>
 </div>`;
 }
 
 document.getElementById("cartItems").innerHTML=html;
+document.getElementById("miniCart").innerHTML=mini;
+
 document.getElementById("total").innerText=total;
 document.getElementById("total2").innerText=total;
-document.getElementById("cartCount").innerText=count+" items";
-}
-
-function removeItem(id){
-delete cart[id];
-updateCart();
+document.getElementById("cartBadge").innerText=count;
 }
 
 function toggleCart(){
 document.getElementById("cartBox").classList.toggle("open");
 }
 
-/* ✅ SMART CHECKOUT VALIDATION */
 function checkout(){
 let name=document.getElementById("custName").value;
 let phone=document.getElementById("custPhone").value;
 let addr=document.getElementById("custAddress").value;
 
-let digitsOnly = phone.replace(/\D/g,'');
+let digits=phone.replace(/\D/g,'');
 
 if(!name || !phone || !addr){
-alert("Please fill all details");
+alert("Fill all details");
 return;
 }
 
-if(digitsOnly.length < 10){
-alert("Enter valid phone number (minimum 10 digits)");
+if(digits.length<10){
+alert("Invalid phone number");
 return;
 }
 
@@ -430,22 +439,8 @@ function showToast(msg){
 let t=document.getElementById("toast");
 t.innerText=msg;
 t.style.display="block";
-setTimeout(()=>{t.style.display="none";},2000);
+setTimeout(()=>t.style.display="none",2000);
 }
-
-/* AUTO HIDE CART BAR */
-let lastScroll=0;
-const cartBar=document.querySelector(".cartBar");
-
-window.addEventListener("scroll",()=>{
-let cur=window.pageYOffset;
-if(cur>lastScroll){
-cartBar.classList.add("hide");
-}else{
-cartBar.classList.remove("hide");
-}
-lastScroll=cur;
-});
 
 window.onload=render;
 
