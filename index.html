@@ -11,7 +11,6 @@ body {
     background:#f2f2f2;
 }
 
-/* HEADER */
 header {
     background:#ff6f00;
     color:white;
@@ -47,7 +46,7 @@ header {
     background:#eee;
 }
 
-/* PRODUCTS */
+/* PRODUCTS GRID */
 .products {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
@@ -56,7 +55,9 @@ header {
     padding-bottom:160px;
 }
 
-/* CARD */
+/* =========================
+   CARD STYLE (AMAZON)
+========================= */
 .card {
     background:#fff;
     border-radius:10px;
@@ -71,12 +72,33 @@ header {
     transform:translateY(-3px);
 }
 
+/* =========================
+   AUTO IMAGE RESIZE SYSTEM
+========================= */
 .card img {
     width:100%;
     height:160px;
-    object-fit:cover;
+
+    object-fit: cover;   /* default Amazon style */
+    
+    background:#fff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    box-sizing:border-box;
 }
 
+/* special product fix */
+.special img {
+    object-fit: contain;
+    padding:10px;
+}
+
+/* =========================
+   CARD BODY
+========================= */
 .card-body {
     padding:10px 12px;
     display:flex;
@@ -112,7 +134,6 @@ header {
     border:none;
     background:white;
     border-radius:6px;
-    font-size:16px;
 }
 
 /* ADD BUTTON */
@@ -124,11 +145,10 @@ header {
     border:none;
     border-radius:20px;
     font-weight:600;
-    cursor:pointer;
 }
 
 /* =========================
-   CART BAR (PREMIUM)
+   CART BAR
 ========================= */
 .cartBar {
     position:fixed;
@@ -148,38 +168,24 @@ header {
     border-radius:18px;
     box-shadow:0 10px 25px rgba(0,0,0,0.25);
 
-    font-weight:500;
-
     z-index:9999;
 }
 
-/* CART LEFT (badge area) */
-.cartLeft {
-    position:relative;
-    font-weight:600;
-    cursor:pointer;
-}
-
-/* RED BADGE */
+/* CART BADGE */
 #cartBadge {
-    position:absolute;
-    top:-8px;
-    right:-18px;
     background:red;
     color:white;
     font-size:12px;
     width:18px;
     height:18px;
     border-radius:50%;
-    display:flex;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
-    font-weight:bold;
+    margin-left:6px;
 }
 
-/* =========================
-   MINI CART (HOVER POPUP)
-========================= */
+/* MINI CART */
 .miniCart {
     position:absolute;
     bottom:60px;
@@ -199,14 +205,12 @@ header {
     display:block;
 }
 
-/* MINI ITEM */
 .miniItem {
     display:flex;
     justify-content:space-between;
     font-size:13px;
-    margin-bottom:6px;
     border-bottom:1px solid #eee;
-    padding-bottom:4px;
+    padding:4px 0;
 }
 
 /* CART BOX */
@@ -247,6 +251,7 @@ header {
     padding:12px 20px;
     border-radius:25px;
     display:none;
+    z-index:10000;
 }
 </style>
 </head>
@@ -270,13 +275,9 @@ header {
 
 <!-- CART BAR -->
 <div class="cartBar">
-
-    <!-- LEFT CART WITH BADGE + MINI CART -->
     <div class="cartLeft" onclick="toggleCart()">
-        🛒 Cart
-        <span id="cartBadge">0</span>
+        🛒 Cart <span id="cartBadge">0</span>
 
-        <!-- MINI CART POPUP -->
         <div class="miniCart" id="miniCart"></div>
     </div>
 
@@ -293,7 +294,10 @@ header {
 
 <div class="formBox">
 <input type="text" id="custName" placeholder="Your Name">
-<input type="tel" id="custPhone" placeholder="Phone Number">
+
+<input type="tel" id="custPhone" placeholder="Phone Number"
+oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')">
+
 <textarea id="custAddress" placeholder="Delivery Address"></textarea>
 </div>
 
@@ -328,9 +332,12 @@ let cart={};
 function render(){
 let html="";
 filtered.forEach(i=>{
+
+let extraClass = i[3]==="special" ? "special" : "";
+
 html+=`
-<div class="card">
-<img src="${i[0]}.jpg">
+<div class="card ${extraClass}">
+<img src="${i[0]}.jpg" onerror="this.src='placeholder.jpg'">
 
 <div class="card-body">
 <h3>${i[1]}</h3>
@@ -342,7 +349,7 @@ html+=`
 <button onclick="qty('${i[0]}',1)">+</button>
 </div>
 
-<button onclick="add('${i[0]}','${i[1]}',${i[2]})" class="addBtn">Add</button>
+<button class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
 </div>
 </div>`;
 });
@@ -376,7 +383,7 @@ count+=i.qty;
 html+=`<div>${i.name} x${i.qty} - ₹${sub}</div>`;
 
 mini+=`<div class="miniItem">
-<span>${i.name} x${i.qty}</span>
+<span>${i.name}</span>
 <span>₹${sub}</span>
 </div>`;
 }
@@ -400,7 +407,7 @@ let addr=document.getElementById("custAddress").value;
 
 let digits=phone.replace(/\D/g,'');
 
-if(!name || !phone || !addr){
+if(!name||!phone||!addr){
 alert("Fill all details");
 return;
 }
