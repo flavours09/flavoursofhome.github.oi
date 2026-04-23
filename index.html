@@ -61,21 +61,12 @@ header {
     border-radius:10px;
     overflow:hidden;
     box-shadow:0 2px 8px rgba(0,0,0,0.12);
-    display:flex;
-    flex-direction:column;
-    transition:0.2s;
 }
 
-.card:hover {
-    transform:translateY(-3px);
-}
-
-/* AUTO IMAGE SYSTEM */
 .card img {
     width:100%;
     height:160px;
     object-fit:cover;
-    background:#fff;
 }
 
 .special img {
@@ -83,23 +74,12 @@ header {
     padding:10px;
 }
 
-/* CARD BODY */
 .card-body {
-    padding:10px 12px;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-
-.card-body h3 {
-    font-size:15px;
-    margin:0;
-    font-weight:600;
+    padding:10px;
 }
 
 .price {
-    font-size:16px;
-    font-weight:700;
+    font-weight:bold;
     color:#B12704;
 }
 
@@ -107,40 +87,24 @@ header {
 .qty {
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    background:#f3f3f3;
-    border-radius:8px;
-    padding:4px 6px;
+    margin:8px 0;
 }
 
-.qty button {
-    width:28px;
-    height:28px;
-    border:none;
-    background:white;
-    border-radius:6px;
-}
-
-/* ADD BUTTON */
+/* BUTTON */
 .addBtn {
     width:100%;
     background:#FFD814;
-    color:#111;
-    padding:8px;
     border:none;
+    padding:8px;
     border-radius:20px;
     font-weight:600;
     cursor:pointer;
-    transition:0.3s;
 }
 
-/* ✅ RESTORED ADDED STATE */
+/* ✅ FIXED GREEN STATE */
 .addBtn.added {
     background:#43a047 !important;
     color:white !important;
-}
-.addBtn.added::after {
-    content:" ✔";
 }
 
 /* CART BAR */
@@ -149,62 +113,39 @@ header {
     bottom:12px;
     left:12px;
     right:12px;
-
     background:linear-gradient(135deg,#1b5e20,#43a047);
     color:white;
-
-    padding:14px 16px;
-
+    padding:12px;
+    border-radius:15px;
     display:flex;
     justify-content:space-between;
-    align-items:center;
-
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.25);
-
-    z-index:9999;
+    z-index:999;
 }
 
-/* CART BADGE */
 #cartBadge {
     background:red;
     color:white;
-    font-size:12px;
-    width:18px;
-    height:18px;
     border-radius:50%;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    margin-left:6px;
+    padding:2px 6px;
+    margin-left:5px;
 }
 
 /* MINI CART */
 .miniCart {
+    display:none;
     position:absolute;
-    bottom:60px;
-    left:12px;
-    width:280px;
+    bottom:50px;
+    left:10px;
     background:white;
     color:black;
-    border-radius:12px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
     padding:10px;
-    display:none;
-    max-height:300px;
-    overflow:auto;
+    border-radius:10px;
+    width:250px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
 
 .cartLeft:hover .miniCart {
     display:block;
-}
-
-.miniItem {
-    display:flex;
-    justify-content:space-between;
-    font-size:13px;
-    border-bottom:1px solid #eee;
-    padding:4px 0;
 }
 
 /* CART BOX */
@@ -216,23 +157,9 @@ header {
     height:100%;
     background:white;
     padding:15px;
-    box-shadow:-2px 0 10px gray;
     transition:0.3s;
-    overflow:auto;
-    z-index:10000;
 }
-
-.cartBox.open {
-    right:0;
-}
-
-/* FORM */
-.formBox input,
-.formBox textarea {
-    width:100%;
-    margin-bottom:8px;
-    padding:8px;
-}
+.cartBox.open { right:0; }
 
 /* TOAST */
 #toast {
@@ -242,10 +169,9 @@ header {
     transform:translateX(-50%);
     background:#333;
     color:white;
-    padding:12px 20px;
-    border-radius:25px;
+    padding:10px 20px;
+    border-radius:20px;
     display:none;
-    z-index:10000;
 }
 </style>
 </head>
@@ -271,68 +197,38 @@ header {
 <div class="cartBar">
     <div class="cartLeft" onclick="toggleCart()">
         🛒 Cart <span id="cartBadge">0</span>
-
         <div class="miniCart" id="miniCart"></div>
     </div>
-
-    <div>₹<span id="total">0</span> • View Cart →</div>
+    <div>₹<span id="total">0</span></div>
 </div>
 
 <!-- CART BOX -->
 <div class="cartBox" id="cartBox">
-<button onclick="toggleCart()" style="position:absolute;top:10px;right:10px;">X</button>
-
+<button onclick="toggleCart()">X</button>
 <h3>Your Cart</h3>
 <div id="cartItems"></div>
-<h4>Total: ₹<span id="total2">0</span></h4>
-
-<div class="formBox">
-<input type="text" id="custName" placeholder="Your Name">
-
-<input type="tel" id="custPhone" placeholder="Phone Number"
-oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')">
-
-<textarea id="custAddress" placeholder="Delivery Address"></textarea>
-</div>
-
-<button onclick="checkout()">Order on WhatsApp</button>
+<h4>Total ₹<span id="total2">0</span></h4>
 </div>
 
 <div id="toast"></div>
 
 <script>
 
-const items = [
+const items=[
 ["putnalu","Putnalu Podi",140,"podi"],
 ["palli","Palli Podi",160,"podi"],
-["nalla","Nalla Podi",160,"podi"],
-["kandi","Kandi Podi",150,"podi"],
-["karivepaku","Karivepaku Podi",130,"podi"],
-["pulihora","Pulihora Mix",140,"podi"],
-["sambar","Sambar Powder",150,"podi"],
-["rasam","Rasam Powder",150,"podi"],
-["garam","Garam Masala",150,"podi"],
-["tomato","Tomato Pickle",280,"pickle"],
-["gongura","Gongura Pickle",330,"pickle"],
-["ginger","Ginger Pickle",330,"pickle"],
-["avakaya","Avakaya Pickle",330,"pickle"],
-["chicken","Chicken Pickle",640,"pickle"],
 ["plant","Protein Powder",900,"special"]
 ];
 
-let filtered=[...items];
 let cart={};
 
 function render(){
 let html="";
-filtered.forEach(i=>{
-
-let cls = i[3]==="special" ? "special" : "";
-
+items.forEach(i=>{
+let cls=i[3]=="special"?"special":"";
 html+=`
 <div class="card ${cls}">
 <img src="${i[0]}.jpg" onerror="this.src='placeholder.jpg'">
-
 <div class="card-body">
 <h3>${i[1]}</h3>
 <div class="price">₹${i[2]}</div>
@@ -343,7 +239,9 @@ html+=`
 <button onclick="qty('${i[0]}',1)">+</button>
 </div>
 
-<button id="btn_${i[0]}" class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
+<button id="btn_${i[0]}" class="addBtn"
+onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
+
 </div>
 </div>`;
 });
@@ -363,29 +261,40 @@ let q=parseInt(document.getElementById(id).innerText);
 cart[id]={name,price,qty:q};
 
 let btn=document.getElementById("btn_"+id);
+
 btn.classList.add("added");
+btn.innerText="Added ✔";
 
 showToast(name+" added");
 updateCart();
 }
 
-function updateCart(){
+function removeItem(id){
+delete cart[id];
 
+let btn=document.getElementById("btn_"+id);
+if(btn){
+btn.classList.remove("added");
+btn.innerText="Add";
+}
+
+updateCart();
+}
+
+function updateCart(){
 let html="",mini="",total=0,count=0;
 
 for(let k in cart){
 let i=cart[k];
 let sub=i.qty*i.price;
-
 total+=sub;
 count+=i.qty;
 
-html+=`<div>${i.name} x${i.qty} - ₹${sub}</div>`;
-
-mini+=`<div class="miniItem">
-<span>${i.name}</span>
-<span>₹${sub}</span>
+html+=`<div>${i.name} x${i.qty} - ₹${sub}
+<button onclick="removeItem('${k}')">❌</button>
 </div>`;
+
+mini+=`<div>${i.name} x${i.qty}</div>`;
 }
 
 document.getElementById("cartItems").innerHTML=html;
@@ -397,49 +306,6 @@ document.getElementById("cartBadge").innerText=count;
 
 function toggleCart(){
 document.getElementById("cartBox").classList.toggle("open");
-}
-
-function checkout(){
-
-let name=document.getElementById("custName").value;
-let phone=document.getElementById("custPhone").value;
-let addr=document.getElementById("custAddress").value;
-
-let digits=phone.replace(/\D/g,'');
-
-if(!name||!phone||!addr){
-alert("Fill all details");
-return;
-}
-
-if(digits.length<10){
-alert("Invalid phone number");
-return;
-}
-
-let msg="Order:%0A";
-msg+="Name: "+name+"%0A";
-msg+="Phone: "+phone+"%0A";
-msg+="Address: "+addr+"%0A%0A";
-
-for(let k in cart){
-let i=cart[k];
-msg+=i.name+" x"+i.qty+" - ₹"+(i.qty*i.price)+"%0A";
-}
-
-msg+="Total: ₹"+document.getElementById("total").innerText;
-
-window.open("https://wa.me/918978992637?text="+msg);
-}
-
-function filter(type){
-filtered = type=="all" ? [...items] : items.filter(i=>i[3]==type);
-render();
-}
-
-function searchProducts(text){
-filtered=items.filter(i=>i[1].toLowerCase().includes(text.toLowerCase()));
-render();
 }
 
 function showToast(msg){
