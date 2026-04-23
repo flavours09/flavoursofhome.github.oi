@@ -108,6 +108,10 @@ header {
     overflow:auto;
 }
 
+.cartBox.open {
+    right:0;
+}
+
 .cartItem {
     display:flex;
     justify-content:space-between;
@@ -131,7 +135,6 @@ header {
     padding:12px 20px;
     border-radius:25px;
     display:none;
-    font-size:14px;
 }
 </style>
 </head>
@@ -159,6 +162,18 @@ header {
 </div>
 
 <div class="cartBox" id="cartBox">
+
+<button onclick="toggleCart()" style="
+position:absolute;
+top:10px;
+right:10px;
+background:red;
+color:white;
+border:none;
+padding:5px 10px;
+border-radius:5px;
+">X</button>
+
 <h3>Your Cart</h3>
 <div id="cartItems"></div>
 <h4>Total: ₹<span id="total2">0</span></h4>
@@ -225,8 +240,9 @@ let q=parseInt(document.getElementById(id).innerText);
 
 cart[id]={name,price,qty:q};
 
-document.getElementById("btn_"+id).innerText="Added ✔";
-document.getElementById("btn_"+id).style.background="#388e3c";
+let btn=document.getElementById("btn_"+id);
+btn.innerText="Added ✔";
+btn.style.background="#388e3c";
 
 showToast(name+" added to cart");
 
@@ -260,11 +276,10 @@ document.getElementById("cartCount").innerText=count+" items";
 function removeItem(id){
 delete cart[id];
 
-// 🔹 Reset button UI
-let btn = document.getElementById("btn_" + id);
+let btn=document.getElementById("btn_"+id);
 if(btn){
-    btn.innerText = "Add";
-    btn.style.background = "#ff6f00";
+btn.innerText="Add";
+btn.style.background="#ff6f00";
 }
 
 updateCart();
@@ -272,8 +287,7 @@ showToast("Item removed");
 }
 
 function toggleCart(){
-let box=document.getElementById("cartBox");
-box.style.right=(box.style.right=="0px")?"-350px":"0px";
+document.getElementById("cartBox").classList.toggle("open");
 }
 
 function checkout(){
