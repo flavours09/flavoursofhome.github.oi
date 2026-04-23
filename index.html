@@ -7,8 +7,8 @@
 <style>
 body {
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background:#f5f5f5;
+    font-family: Arial;
+    background:#f7f7f7;
 }
 
 header {
@@ -16,167 +16,80 @@ header {
     color:white;
     padding:15px;
     text-align:center;
-    font-size:22px;
+}
+
+.container {
+    padding:15px;
 }
 
 .products {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-    gap:20px;
-    padding:20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap:15px;
 }
 
 .card {
     background:white;
-    border-radius:12px;
     padding:10px;
+    border-radius:10px;
     text-align:center;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    box-shadow:0 0 10px #ccc;
 }
 
 .card img {
     width:100%;
     height:180px;
     object-fit:cover;
-    border-radius:10px;
 }
 
-.card h3 {
-    margin:10px 0 5px;
-}
-
-.qty {
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-    margin:10px 0;
-}
-
-.qty button {
-    width:30px;
-    height:30px;
-    font-size:18px;
-    border:none;
-    background:#ddd;
-    cursor:pointer;
-}
-
-.add {
-    background:#ff9800;
+button {
+    background:#25D366;
     color:white;
-    border:none;
     padding:8px;
+    border:none;
     width:100%;
-    border-radius:6px;
+    margin-top:8px;
     cursor:pointer;
 }
-
-.cartBox {
-    position:fixed;
-    bottom:15px;
-    right:15px;
-    background:#2e7d32;
-    color:white;
-    padding:12px;
-    border-radius:10px;
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-Flavours Of Home 🍲
+<h1>Flavours Of Home</h1>
+<p>Homemade Goodness</p>
 </header>
 
+<div class="container">
 <div class="products">
 
-<!-- PRODUCT TEMPLATE -->
+<div class="card"><img src="putnalu.jpg"><h3>Putnalu Podi</h3><button onclick="order('Putnalu Podi')">Order</button></div>
+<div class="card"><img src="palli.jpg"><h3>Palli Podi</h3><button onclick="order('Palli Podi')">Order</button></div>
+<div class="card"><img src="nalla.jpg"><h3>Nalla Podi</h3><button onclick="order('Nalla Podi')">Order</button></div>
+<div class="card"><img src="kandi.jpg"><h3>Kandi Podi</h3><button onclick="order('Kandi Podi')">Order</button></div>
+<div class="card"><img src="karivepaku.jpg"><h3>Karivepaku Podi</h3><button onclick="order('Karivepaku Podi')">Order</button></div>
+<div class="card"><img src="pulihora.jpg"><h3>Pulihora Mix</h3><button onclick="order('Pulihora Mix')">Order</button></div>
+<div class="card"><img src="sambar.jpg"><h3>Sambar Powder</h3><button onclick="order('Sambar Powder')">Order</button></div>
+<div class="card"><img src="rasam.jpg"><h3>Rasam Powder</h3><button onclick="order('Rasam Powder')">Order</button></div>
+<div class="card"><img src="garam.jpg"><h3>Garam Masala</h3><button onclick="order('Garam Masala')">Order</button></div>
+
+<div class="card"><img src="tomato.jpg"><h3>Tomato Pickle</h3><button onclick="order('Tomato Pickle')">Order</button></div>
+<div class="card"><img src="gongura.jpg"><h3>Gongura Pickle</h3><button onclick="order('Gongura Pickle')">Order</button></div>
+<div class="card"><img src="ginger.jpg"><h3>Ginger Pickle</h3><button onclick="order('Ginger Pickle')">Order</button></div>
+<div class="card"><img src="avakaya.jpg"><h3>Avakaya Pickle</h3><button onclick="order('Avakaya Pickle')">Order</button></div>
+<div class="card"><img src="chicken.jpg"><h3>Chicken Pickle</h3><button onclick="order('Chicken Pickle')">Order</button></div>
+
+<div class="card"><img src="plant.jpg"><h3>Plant Protein Powder</h3><button onclick="order('Plant Protein')">Order</button></div>
+
+</div>
+</div>
 
 <script>
-const products = [
-"putnalu","palli","nalla","kandi","karivepaku","pulihora",
-"sambar","rasam","garam",
-"tomato","gongura","ginger","avakaya","chicken","plant"
-];
-
-const names = {
-putnalu:"Putnalu Podi",
-palli:"Palli Podi",
-nalla:"Nalla Podi",
-kandi:"Kandi Podi",
-karivepaku:"Karivepaku Podi",
-pulihora:"Pulihora Mix",
-sambar:"Sambar Powder",
-rasam:"Rasam Powder",
-garam:"Garam Masala",
-tomato:"Tomato Pickle",
-gongura:"Gongura Pickle",
-ginger:"Ginger Pickle",
-avakaya:"Avakaya Pickle",
-chicken:"Chicken Pickle",
-plant:"Protein Powder"
-};
-
-let cart = {};
-let total = 0;
-
-function render(){
-    let html = "";
-    products.forEach(p=>{
-        html += `
-        <div class="card">
-            <img src="${p}.jpg">
-            <h3>${names[p]}</h3>
-
-            <div class="qty">
-                <button onclick="qty('${p}',-1)">-</button>
-                <span id="${p}">0</span>
-                <button onclick="qty('${p}',1)">+</button>
-            </div>
-
-            <button class="add" onclick="add('${p}')">Add to Cart</button>
-        </div>
-        `;
-    });
-    document.querySelector(".products").innerHTML = html;
+function order(product){
+    window.open("https://wa.me/918978992637?text=Hi%20I%20want%20to%20order%20"+product);
 }
-
-function qty(id,val){
-    let el = document.getElementById(id);
-    let v = parseInt(el.innerText)+val;
-    if(v<0) v=0;
-    el.innerText = v;
-}
-
-function add(id){
-    let q = parseInt(document.getElementById(id).innerText);
-    if(q==0){ alert("Select quantity"); return; }
-
-    cart[id]=q;
-    total += q;
-    document.getElementById("cartCount").innerText = total;
-}
-
-function checkout(){
-    let msg="Hi I want:%0A";
-    for(let k in cart){
-        msg += names[k]+" - "+cart[k]+"%0A";
-    }
-    window.open("https://wa.me/918978992637?text="+msg);
-}
-
-window.onload = render;
 </script>
 
-</div>
-
-<div class="cartBox">
-🛒 <span id="cartCount">0</span>
-<button onclick="checkout()">Order</button>
-</div>
-
 </body>
-</html>
+</html> 
