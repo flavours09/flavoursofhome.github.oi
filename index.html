@@ -13,16 +13,9 @@ header {
     padding:15px;
     text-align:center;
     font-size:22px;
-    font-weight:bold;
 }
 
-.searchBar {
-    position:sticky;
-    top:0;
-    background:white;
-    padding:10px;
-}
-
+.searchBar { padding:10px; background:white; }
 .searchBar input {
     width:100%;
     padding:10px;
@@ -112,18 +105,33 @@ header {
     padding:15px;
     box-shadow:-2px 0 10px gray;
     transition:0.3s;
+    overflow:auto;
+}
+
+.cartItem {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.cartItem button {
+    background:red;
+    color:white;
+    border:none;
+    border-radius:5px;
 }
 
 #toast {
     position:fixed;
-    bottom:80px;
+    bottom:100px;
     left:50%;
     transform:translateX(-50%);
     background:#333;
     color:white;
-    padding:10px 20px;
-    border-radius:20px;
+    padding:12px 20px;
+    border-radius:25px;
     display:none;
+    font-size:14px;
 }
 </style>
 </head>
@@ -154,7 +162,7 @@ header {
 <h3>Your Cart</h3>
 <div id="cartItems"></div>
 <h4>Total: ₹<span id="total2">0</span></h4>
-<button onclick="checkout()">Order on WhatsApp</button>
+<button onclick="checkout()">Order</button>
 </div>
 
 <div id="toast"></div>
@@ -215,18 +223,11 @@ el.innerText=q;
 function add(id,name,price){
 let q=parseInt(document.getElementById(id).innerText);
 
-if(cart[id]){
-cart[id].qty+=q;
-}else{
 cart[id]={name,price,qty:q};
-}
 
-// button change
-let btn=document.getElementById("btn_"+id);
-btn.innerText="Added ✔";
-btn.style.background="#388e3c";
+document.getElementById("btn_"+id).innerText="Added ✔";
+document.getElementById("btn_"+id).style.background="#388e3c";
 
-// toast
 showToast(name+" added to cart");
 
 updateCart();
@@ -243,13 +244,23 @@ let sub=i.qty*i.price;
 total+=sub;
 count+=i.qty;
 
-html+=`${i.name} (${i.qty}) - ₹${sub}<br>`;
+html+=`
+<div class="cartItem">
+<span>${i.name} (${i.qty}) - ₹${sub}</span>
+<button onclick="removeItem('${k}')">❌</button>
+</div>`;
 }
 
 document.getElementById("cartItems").innerHTML=html;
 document.getElementById("total").innerText=total;
 document.getElementById("total2").innerText=total;
 document.getElementById("cartCount").innerText=count+" items";
+}
+
+function removeItem(id){
+delete cart[id];
+updateCart();
+showToast("Item removed");
 }
 
 function toggleCart(){
