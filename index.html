@@ -5,72 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-    margin:0;
-    font-family: Arial;
-    background:#f7f7f7;
-}
+body { margin:0; font-family: Arial; background:#f5f5f5; }
 
 header {
     background:#2e7d32;
     color:white;
     padding:15px;
     text-align:center;
+    font-size:22px;
 }
 
 .products {
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-    gap:15px;
-    padding:15px;
+    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap:20px;
+    padding:20px;
 }
 
 .card {
     background:white;
+    border-radius:12px;
     padding:10px;
-    border-radius:10px;
     text-align:center;
-    box-shadow:0 0 10px #ccc;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 .card img {
     width:100%;
     height:180px;
     object-fit:cover;
+    border-radius:10px;
 }
 
 .qty {
     display:flex;
     justify-content:center;
-    align-items:center;
     gap:10px;
-    margin-top:8px;
+    margin:10px 0;
 }
 
 .qty button {
     width:30px;
     height:30px;
-    font-size:18px;
 }
 
 .addBtn {
-    background:#25D366;
+    background:#ff9800;
     color:white;
     padding:8px;
     border:none;
     width:100%;
-    margin-top:8px;
+    border-radius:6px;
+}
+
+.cartBtn {
+    position:fixed;
+    top:15px;
+    right:15px;
+    background:#ff9800;
+    color:white;
+    padding:10px;
+    border-radius:50%;
     cursor:pointer;
 }
 
 .cartBox {
     position:fixed;
-    top:10px;
-    right:10px;
+    right:-350px;
+    top:0;
+    width:300px;
+    height:100%;
     background:white;
-    padding:10px;
-    border-radius:10px;
-    box-shadow:0 0 10px gray;
+    box-shadow:-2px 0 10px gray;
+    padding:15px;
+    transition:0.3s;
+    overflow:auto;
+}
+
+.cartItem {
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.total {
+    font-weight:bold;
+    margin-top:15px;
 }
 </style>
 </head>
@@ -78,95 +98,126 @@ header {
 <body>
 
 <header>
-<h1>Flavours Of Home</h1>
-<p>Homemade Goodness</p>
+Flavours Of Home 🍲
 </header>
 
-<div class="cartBox">
-🛒 Cart: <span id="cartCount">0</span><br>
-<button onclick="checkout()">Order</button>
+<div class="cartBtn" onclick="toggleCart()">🛒</div>
+
+<div class="products" id="products"></div>
+
+<div class="cartBox" id="cartBox">
+<h3>Your Cart</h3>
+<div id="cartItems"></div>
+<div class="total">Total: ₹<span id="total">0</span></div>
+<button onclick="checkout()">Order on WhatsApp</button>
 </div>
-
-<div class="products">
-
-<!-- PRODUCT TEMPLATE -->
 
 <script>
 const items = [
-["putnalu","Putnalu Podi"],
-["palli","Palli Podi"],
-["nalla","Nalla Podi"],
-["kandi","Kandi Podi"],
-["karivepaku","Karivepaku Podi"],
-["pulihora","Pulihora Mix"],
-["sambar","Sambar Powder"],
-["rasam","Rasam Powder"],
-["garam","Garam Masala"],
-["tomato","Tomato Pickle"],
-["gongura","Gongura Pickle"],
-["ginger","Ginger Pickle"],
-["avakaya","Avakaya Pickle"],
-["chicken","Chicken Pickle"],
-["plant","Plant Protein"]
+["putnalu","Putnalu Podi",140],
+["palli","Palli Podi",160],
+["nalla","Nalla Podi",160],
+["kandi","Kandi Podi",150],
+["karivepaku","Karivepaku Podi",130],
+["pulihora","Pulihora Mix",140],
+["sambar","Sambar Powder",150],
+["rasam","Rasam Powder",150],
+["garam","Garam Masala",150],
+["tomato","Tomato Pickle",280],
+["gongura","Gongura Pickle",330],
+["ginger","Ginger Pickle",330],
+["avakaya","Avakaya Pickle",330],
+["chicken","Chicken Pickle",640],
+["plant","Protein Powder",900]
 ];
 
 let cart = {};
-let total = 0;
 
 function render(){
     let html="";
     items.forEach(i=>{
-        html += `
+        html+=`
         <div class="card">
         <img src="${i[0]}.jpg">
         <h3>${i[1]}</h3>
+        <p>₹${i[2]}</p>
 
         <div class="qty">
-        <button onclick="changeQty('${i[0]}',-1)">-</button>
-        <span id="${i[0]}">0</span>
-        <button onclick="changeQty('${i[0]}',1)">+</button>
+        <button onclick="qty('${i[0]}',-1)">-</button>
+        <span id="${i[0]}">1</span>
+        <button onclick="qty('${i[0]}',1)">+</button>
         </div>
 
-        <button class="addBtn" onclick="addToCart('${i[1]}','${i[0]}')">Add to Cart</button>
+        <button class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
         </div>
         `;
     });
-    document.querySelector(".products").innerHTML = html;
+    document.getElementById("products").innerHTML = html;
 }
 
-function changeQty(id,val){
+function qty(id,val){
     let el=document.getElementById(id);
     let q=parseInt(el.innerText)+val;
-    if(q<0) q=0;
+    if(q<1) q=1;
     el.innerText=q;
 }
 
-function addToCart(name,id){
+function add(id,name,price){
     let q=parseInt(document.getElementById(id).innerText);
-    if(q==0){
-        alert("Select quantity");
-        return;
+
+    if(cart[id]){
+        cart[id].qty += q;
+    } else {
+        cart[id]={name,price,qty:q};
     }
 
-    cart[name]=q;
-    total+=q;
+    updateCart();
+}
 
-    document.getElementById("cartCount").innerText=total;
+function updateCart(){
+    let html="";
+    let total=0;
+
+    for(let k in cart){
+        let item=cart[k];
+        let sub=item.qty * item.price;
+        total += sub;
+
+        html+=`
+        <div class="cartItem">
+        ${item.name} (${item.qty}) - ₹${sub}
+        <button onclick="removeItem('${k}')">❌</button>
+        </div>
+        `;
+    }
+
+    document.getElementById("cartItems").innerHTML=html;
+    document.getElementById("total").innerText=total;
+}
+
+function removeItem(id){
+    delete cart[id];
+    updateCart();
+}
+
+function toggleCart(){
+    let box=document.getElementById("cartBox");
+    box.style.right = (box.style.right=="0px") ? "-350px" : "0px";
 }
 
 function checkout(){
     let msg="Hi I want to order:%0A";
-    for(let i in cart){
-        msg+=i+" - "+cart[i]+"%0A";
+    for(let k in cart){
+        let i=cart[k];
+        msg+=i.name+" - "+i.qty+" pcs - ₹"+(i.qty*i.price)+"%0A";
     }
+    msg+="Total: ₹"+document.getElementById("total").innerText;
 
-    window.open("https://wa.me/918978992637?text="+msg);
+    window.open("https://wa.me/91XXXXXXXXXX?text="+msg);
 }
 
 window.onload=render;
 </script>
-
-</div>
 
 </body>
 </html>
