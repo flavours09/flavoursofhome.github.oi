@@ -108,9 +108,7 @@ header {
     overflow:auto;
 }
 
-.cartBox.open {
-    right:0;
-}
+.cartBox.open { right:0; }
 
 .cartItem {
     display:flex;
@@ -123,6 +121,17 @@ header {
     color:white;
     border:none;
     border-radius:5px;
+}
+
+/* FORM */
+.formBox {
+    margin-top:15px;
+}
+
+.formBox input, .formBox textarea {
+    width:100%;
+    margin-bottom:8px;
+    padding:8px;
 }
 
 #toast {
@@ -163,21 +172,20 @@ header {
 
 <div class="cartBox" id="cartBox">
 
-<button onclick="toggleCart()" style="
-position:absolute;
-top:10px;
-right:10px;
-background:red;
-color:white;
-border:none;
-padding:5px 10px;
-border-radius:5px;
-">X</button>
+<button onclick="toggleCart()" style="position:absolute;top:10px;right:10px;">X</button>
 
 <h3>Your Cart</h3>
 <div id="cartItems"></div>
 <h4>Total: ₹<span id="total2">0</span></h4>
-<button onclick="checkout()">Order</button>
+
+<div class="formBox">
+<input type="text" id="custName" placeholder="Your Name">
+<input type="tel" id="custPhone" placeholder="Phone Number">
+<textarea id="custAddress" placeholder="Delivery Address"></textarea>
+</div>
+
+<button onclick="checkout()">Order on WhatsApp</button>
+
 </div>
 
 <div id="toast"></div>
@@ -222,8 +230,7 @@ html+=`
 
 <button id="btn_${i[0]}" class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
 </div>
-</div>
-`;
+</div>`;
 });
 document.getElementById("products").innerHTML=html;
 }
@@ -237,31 +244,24 @@ el.innerText=q;
 
 function add(id,name,price){
 let q=parseInt(document.getElementById(id).innerText);
-
 cart[id]={name,price,qty:q};
 
-let btn=document.getElementById("btn_"+id);
-btn.innerText="Added ✔";
-btn.style.background="#388e3c";
+document.getElementById("btn_"+id).innerText="Added ✔";
+document.getElementById("btn_"+id).style.background="#388e3c";
 
-showToast(name+" added to cart");
-
+showToast(name+" added");
 updateCart();
 }
 
 function updateCart(){
-let html="";
-let total=0;
-let count=0;
+let html="",total=0,count=0;
 
 for(let k in cart){
 let i=cart[k];
 let sub=i.qty*i.price;
-total+=sub;
-count+=i.qty;
+total+=sub; count+=i.qty;
 
-html+=`
-<div class="cartItem">
+html+=`<div class="cartItem">
 <span>${i.name} (${i.qty}) - ₹${sub}</span>
 <button onclick="removeItem('${k}')">❌</button>
 </div>`;
@@ -275,13 +275,8 @@ document.getElementById("cartCount").innerText=count+" items";
 
 function removeItem(id){
 delete cart[id];
-
 let btn=document.getElementById("btn_"+id);
-if(btn){
-btn.innerText="Add";
-btn.style.background="#ff6f00";
-}
-
+if(btn){ btn.innerText="Add"; btn.style.background="#ff6f00"; }
 updateCart();
 showToast("Item removed");
 }
@@ -291,19 +286,32 @@ document.getElementById("cartBox").classList.toggle("open");
 }
 
 function checkout(){
-let msg="Hi I want:%0A";
+let name=document.getElementById("custName").value;
+let phone=document.getElementById("custPhone").value;
+let addr=document.getElementById("custAddress").value;
+
+if(!name || !phone || !addr){
+alert("Please fill all details");
+return;
+}
+
+let msg="Order Details:%0A";
+msg+="Name: "+name+"%0A";
+msg+="Phone: "+phone+"%0A";
+msg+="Address: "+addr+"%0A%0A";
+
 for(let k in cart){
 let i=cart[k];
 msg+=i.name+" - "+i.qty+" pcs - ₹"+(i.qty*i.price)+"%0A";
 }
+
 msg+="Total: ₹"+document.getElementById("total").innerText;
 
 window.open("https://wa.me/918978992637?text="+msg);
 }
 
 function filter(type){
-if(type=="all") filtered=[...items];
-else filtered=items.filter(i=>i[3]==type);
+filtered = type=="all" ? [...items] : items.filter(i=>i[3]==type);
 render();
 }
 
