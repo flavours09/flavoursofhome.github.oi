@@ -5,13 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background:#f2f2f2;
-}
+body { margin:0; font-family: 'Segoe UI', sans-serif; background:#f2f2f2; }
 
-/* HEADER */
 header {
     background:#ff6f00;
     color:white;
@@ -21,13 +16,11 @@ header {
     font-weight:bold;
 }
 
-/* SEARCH */
 .searchBar {
     position:sticky;
     top:0;
     background:white;
     padding:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .searchBar input {
@@ -37,7 +30,6 @@ header {
     border:1px solid #ccc;
 }
 
-/* CATEGORY */
 .categories {
     display:flex;
     overflow-x:auto;
@@ -51,10 +43,8 @@ header {
     border:none;
     border-radius:20px;
     background:#eee;
-    cursor:pointer;
 }
 
-/* PRODUCTS */
 .products {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
@@ -75,21 +65,10 @@ header {
     object-fit:cover;
 }
 
-.card-body {
-    padding:10px;
-}
+.card-body { padding:10px; }
 
-.card h3 {
-    margin:5px 0;
-    font-size:16px;
-}
+.price { color:#388e3c; font-weight:bold; }
 
-.price {
-    color:#388e3c;
-    font-weight:bold;
-}
-
-/* QTY */
 .qty {
     display:flex;
     justify-content:space-between;
@@ -103,7 +82,6 @@ header {
     background:#ddd;
 }
 
-/* ADD BUTTON */
 .addBtn {
     width:100%;
     background:#ff6f00;
@@ -113,7 +91,6 @@ header {
     border-radius:6px;
 }
 
-/* CART */
 .cartBar {
     position:fixed;
     bottom:0;
@@ -137,6 +114,17 @@ header {
     transition:0.3s;
 }
 
+#toast {
+    position:fixed;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#333;
+    color:white;
+    padding:10px 20px;
+    border-radius:20px;
+    display:none;
+}
 </style>
 </head>
 
@@ -168,6 +156,8 @@ header {
 <h4>Total: ₹<span id="total2">0</span></h4>
 <button onclick="checkout()">Order on WhatsApp</button>
 </div>
+
+<div id="toast"></div>
 
 <script>
 const items = [
@@ -207,7 +197,7 @@ html+=`
 <button onclick="qty('${i[0]}',1)">+</button>
 </div>
 
-<button class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
+<button id="btn_${i[0]}" class="addBtn" onclick="add('${i[0]}','${i[1]}',${i[2]})">Add</button>
 </div>
 </div>
 `;
@@ -230,6 +220,14 @@ cart[id].qty+=q;
 }else{
 cart[id]={name,price,qty:q};
 }
+
+// button change
+let btn=document.getElementById("btn_"+id);
+btn.innerText="Added ✔";
+btn.style.background="#388e3c";
+
+// toast
+showToast(name+" added to cart");
 
 updateCart();
 }
@@ -256,7 +254,7 @@ document.getElementById("cartCount").innerText=count+" items";
 
 function toggleCart(){
 let box=document.getElementById("cartBox");
-box.style.right = (box.style.right=="0px")?"-350px":"0px";
+box.style.right=(box.style.right=="0px")?"-350px":"0px";
 }
 
 function checkout(){
@@ -279,6 +277,13 @@ render();
 function searchProducts(text){
 filtered=items.filter(i=>i[1].toLowerCase().includes(text.toLowerCase()));
 render();
+}
+
+function showToast(msg){
+let t=document.getElementById("toast");
+t.innerText=msg;
+t.style.display="block";
+setTimeout(()=>{t.style.display="none";},2000);
 }
 
 window.onload=render;
