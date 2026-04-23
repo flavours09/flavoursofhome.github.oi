@@ -15,6 +15,32 @@ header {
     font-size:22px;
 }
 
+.searchBar {
+    padding:10px;
+    text-align:center;
+}
+
+.searchBar input {
+    width:90%;
+    padding:10px;
+    border-radius:20px;
+    border:1px solid #ccc;
+}
+
+.filters {
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.filters button {
+    margin:5px;
+    padding:8px 12px;
+    border:none;
+    border-radius:5px;
+    background:#ddd;
+    cursor:pointer;
+}
+
 .products {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
@@ -34,7 +60,6 @@ header {
     width:100%;
     height:180px;
     object-fit:cover;
-    border-radius:10px;
 }
 
 .qty {
@@ -83,23 +108,30 @@ header {
 }
 
 .cartItem {
-    display:flex;
-    justify-content:space-between;
     margin-bottom:10px;
 }
 
 .total {
     font-weight:bold;
-    margin-top:15px;
+    margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-Flavours Of Home 🍲
-</header>
+<header>Flavours Of Home 🍲</header>
+
+<div class="searchBar">
+<input type="text" placeholder="Search products..." onkeyup="searchProducts(this.value)">
+</div>
+
+<div class="filters">
+<button onclick="filter('all')">All</button>
+<button onclick="filter('podi')">Powders</button>
+<button onclick="filter('pickle')">Pickles</button>
+<button onclick="filter('special')">Special</button>
+</div>
 
 <div class="cartBtn" onclick="toggleCart()">🛒</div>
 
@@ -109,33 +141,36 @@ Flavours Of Home 🍲
 <h3>Your Cart</h3>
 <div id="cartItems"></div>
 <div class="total">Total: ₹<span id="total">0</span></div>
-<button onclick="checkout()">Order on WhatsApp</button>
+<button onclick="checkout()">Order</button>
 </div>
 
 <script>
 const items = [
-["putnalu","Putnalu Podi",140],
-["palli","Palli Podi",160],
-["nalla","Nalla Podi",160],
-["kandi","Kandi Podi",150],
-["karivepaku","Karivepaku Podi",130],
-["pulihora","Pulihora Mix",140],
-["sambar","Sambar Powder",150],
-["rasam","Rasam Powder",150],
-["garam","Garam Masala",150],
-["tomato","Tomato Pickle",280],
-["gongura","Gongura Pickle",330],
-["ginger","Ginger Pickle",330],
-["avakaya","Avakaya Pickle",330],
-["chicken","Chicken Pickle",640],
-["plant","Protein Powder",900]
+["putnalu","Putnalu Podi",140,"podi"],
+["palli","Palli Podi",160,"podi"],
+["nalla","Nalla Podi",160,"podi"],
+["kandi","Kandi Podi",150,"podi"],
+["karivepaku","Karivepaku Podi",130,"podi"],
+["pulihora","Pulihora Mix",140,"podi"],
+["sambar","Sambar Powder",150,"podi"],
+["rasam","Rasam Powder",150,"podi"],
+["garam","Garam Masala",150,"podi"],
+
+["tomato","Tomato Pickle",280,"pickle"],
+["gongura","Gongura Pickle",330,"pickle"],
+["ginger","Ginger Pickle",330,"pickle"],
+["avakaya","Avakaya Pickle",330,"pickle"],
+["chicken","Chicken Pickle",640,"pickle"],
+
+["plant","Protein Powder",900,"special"]
 ];
 
+let filtered = [...items];
 let cart = {};
 
 function render(){
     let html="";
-    items.forEach(i=>{
+    filtered.forEach(i=>{
         html+=`
         <div class="card">
         <img src="${i[0]}.jpg">
@@ -152,7 +187,7 @@ function render(){
         </div>
         `;
     });
-    document.getElementById("products").innerHTML = html;
+    document.getElementById("products").innerHTML=html;
 }
 
 function qty(id,val){
@@ -166,7 +201,7 @@ function add(id,name,price){
     let q=parseInt(document.getElementById(id).innerText);
 
     if(cart[id]){
-        cart[id].qty += q;
+        cart[id].qty+=q;
     } else {
         cart[id]={name,price,qty:q};
     }
@@ -179,13 +214,13 @@ function updateCart(){
     let total=0;
 
     for(let k in cart){
-        let item=cart[k];
-        let sub=item.qty * item.price;
-        total += sub;
+        let i=cart[k];
+        let sub=i.qty*i.price;
+        total+=sub;
 
         html+=`
         <div class="cartItem">
-        ${item.name} (${item.qty}) - ₹${sub}
+        ${i.name} (${i.qty}) - ₹${sub}
         <button onclick="removeItem('${k}')">❌</button>
         </div>
         `;
@@ -206,14 +241,25 @@ function toggleCart(){
 }
 
 function checkout(){
-    let msg="Hi I want to order:%0A";
+    let msg="Hi I want:%0A";
     for(let k in cart){
         let i=cart[k];
         msg+=i.name+" - "+i.qty+" pcs - ₹"+(i.qty*i.price)+"%0A";
     }
     msg+="Total: ₹"+document.getElementById("total").innerText;
 
-    window.open("https://wa.me/91XXXXXXXXXX?text="+msg);
+    window.open("https://wa.me/918978992637?text="+msg);
+}
+
+function filter(type){
+    if(type=="all") filtered=[...items];
+    else filtered=items.filter(i=>i[3]==type);
+    render();
+}
+
+function searchProducts(text){
+    filtered = items.filter(i=>i[1].toLowerCase().includes(text.toLowerCase()));
+    render();
 }
 
 window.onload=render;
