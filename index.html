@@ -18,14 +18,11 @@ header {
     text-align:center;
 }
 
-.container {
-    padding:15px;
-}
-
 .products {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     gap:15px;
+    padding:15px;
 }
 
 .card {
@@ -42,7 +39,21 @@ header {
     object-fit:cover;
 }
 
-button {
+.qty {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-top:8px;
+}
+
+.qty button {
+    width:30px;
+    height:30px;
+    font-size:18px;
+}
+
+.addBtn {
     background:#25D366;
     color:white;
     padding:8px;
@@ -50,6 +61,16 @@ button {
     width:100%;
     margin-top:8px;
     cursor:pointer;
+}
+
+.cartBox {
+    position:fixed;
+    top:10px;
+    right:10px;
+    background:white;
+    padding:10px;
+    border-radius:10px;
+    box-shadow:0 0 10px gray;
 }
 </style>
 </head>
@@ -61,35 +82,91 @@ button {
 <p>Homemade Goodness</p>
 </header>
 
-<div class="container">
+<div class="cartBox">
+🛒 Cart: <span id="cartCount">0</span><br>
+<button onclick="checkout()">Order</button>
+</div>
+
 <div class="products">
 
-<div class="card"><img src="putnalu.jpg"><h3>Putnalu Podi</h3><button onclick="order('Putnalu Podi')">Order</button></div>
-<div class="card"><img src="palli.jpg"><h3>Palli Podi</h3><button onclick="order('Palli Podi')">Order</button></div>
-<div class="card"><img src="nalla.jpg"><h3>Nalla Podi</h3><button onclick="order('Nalla Podi')">Order</button></div>
-<div class="card"><img src="kandi.jpg"><h3>Kandi Podi</h3><button onclick="order('Kandi Podi')">Order</button></div>
-<div class="card"><img src="karivepaku.jpg"><h3>Karivepaku Podi</h3><button onclick="order('Karivepaku Podi')">Order</button></div>
-<div class="card"><img src="pulihora.jpg"><h3>Pulihora Mix</h3><button onclick="order('Pulihora Mix')">Order</button></div>
-<div class="card"><img src="sambar.jpg"><h3>Sambar Powder</h3><button onclick="order('Sambar Powder')">Order</button></div>
-<div class="card"><img src="rasam.jpg"><h3>Rasam Powder</h3><button onclick="order('Rasam Powder')">Order</button></div>
-<div class="card"><img src="garam.jpg"><h3>Garam Masala</h3><button onclick="order('Garam Masala')">Order</button></div>
-
-<div class="card"><img src="tomato.jpg"><h3>Tomato Pickle</h3><button onclick="order('Tomato Pickle')">Order</button></div>
-<div class="card"><img src="gongura.jpg"><h3>Gongura Pickle</h3><button onclick="order('Gongura Pickle')">Order</button></div>
-<div class="card"><img src="ginger.jpg"><h3>Ginger Pickle</h3><button onclick="order('Ginger Pickle')">Order</button></div>
-<div class="card"><img src="avakaya.jpg"><h3>Avakaya Pickle</h3><button onclick="order('Avakaya Pickle')">Order</button></div>
-<div class="card"><img src="chicken.jpg"><h3>Chicken Pickle</h3><button onclick="order('Chicken Pickle')">Order</button></div>
-
-<div class="card"><img src="plant.jpg"><h3>Plant Protein Powder</h3><button onclick="order('Plant Protein')">Order</button></div>
-
-</div>
-</div>
+<!-- PRODUCT TEMPLATE -->
 
 <script>
-function order(product){
-    window.open("https://wa.me/918978992637?text=Hi%20I%20want%20to%20order%20"+product);
+const items = [
+["putnalu","Putnalu Podi"],
+["palli","Palli Podi"],
+["nalla","Nalla Podi"],
+["kandi","Kandi Podi"],
+["karivepaku","Karivepaku Podi"],
+["pulihora","Pulihora Mix"],
+["sambar","Sambar Powder"],
+["rasam","Rasam Powder"],
+["garam","Garam Masala"],
+["tomato","Tomato Pickle"],
+["gongura","Gongura Pickle"],
+["ginger","Ginger Pickle"],
+["avakaya","Avakaya Pickle"],
+["chicken","Chicken Pickle"],
+["plant","Plant Protein"]
+];
+
+let cart = {};
+let total = 0;
+
+function render(){
+    let html="";
+    items.forEach(i=>{
+        html += `
+        <div class="card">
+        <img src="${i[0]}.jpg">
+        <h3>${i[1]}</h3>
+
+        <div class="qty">
+        <button onclick="changeQty('${i[0]}',-1)">-</button>
+        <span id="${i[0]}">0</span>
+        <button onclick="changeQty('${i[0]}',1)">+</button>
+        </div>
+
+        <button class="addBtn" onclick="addToCart('${i[1]}','${i[0]}')">Add to Cart</button>
+        </div>
+        `;
+    });
+    document.querySelector(".products").innerHTML = html;
 }
+
+function changeQty(id,val){
+    let el=document.getElementById(id);
+    let q=parseInt(el.innerText)+val;
+    if(q<0) q=0;
+    el.innerText=q;
+}
+
+function addToCart(name,id){
+    let q=parseInt(document.getElementById(id).innerText);
+    if(q==0){
+        alert("Select quantity");
+        return;
+    }
+
+    cart[name]=q;
+    total+=q;
+
+    document.getElementById("cartCount").innerText=total;
+}
+
+function checkout(){
+    let msg="Hi I want to order:%0A";
+    for(let i in cart){
+        msg+=i+" - "+cart[i]+"%0A";
+    }
+
+    window.open("https://wa.me/918978992637?text="+msg);
+}
+
+window.onload=render;
 </script>
 
+</div>
+
 </body>
-</html> 
+</html>
