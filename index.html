@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flavours Of Home</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #fff8e1;
+}
+
+header {
+    background: #4CAF50;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+.container {
+    padding: 15px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px #ccc;
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+button {
+    background: #25D366;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1ebc59;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Flavours Of Home</h1>
+    <p>Homemade Goodness, In Every Bite</p>
+</header>
+
+<div class="container">
+
+<h2>Podi / Powders</h2>
+
+<div class="products">
+
+<div class="card"><img src="putnalu.jpg"><h3>Putnalu Karam Podi</h3><p>₹140</p><button onclick="order('Putnalu Karam Podi')">Order</button></div>
+
+<div class="card"><img src="palli.jpg"><h3>Palli Karam Podi</h3><p>₹160</p><button onclick="order('Palli Karam Podi')">Order</button></div>
+
+<div class="card"><img src="nalla.jpg"><h3>Nalla Karam Podi</h3><p>₹160</p><button onclick="order('Nalla Karam Podi')">Order</button></div>
+
+<div class="card"><img src="kandi.jpg"><h3>Kandi Karam Podi</h3><p>₹150</p><button onclick="order('Kandi Karam Podi')">Order</button></div>
+
+<div class="card"><img src="karivepaku.jpg"><h3>Karivepaku Karam Podi</h3><p>₹130</p><button onclick="order('Karivepaku Karam Podi')">Order</button></div>
+
+<div class="card"><img src="pulihora.jpg"><h3>Pulihora Podi</h3><p>₹140</p><button onclick="order('Pulihora Podi')">Order</button></div>
+
+<div class="card"><img src="sambar.jpg"><h3>Sambar Powder</h3><p>₹150</p><button onclick="order('Sambar Powder')">Order</button></div>
+
+<div class="card"><img src="rasam.jpg"><h3>Rasam Powder</h3><p>₹150</p><button onclick="order('Rasam Powder')">Order</button></div>
+
+<div class="card"><img src="garam.jpg"><h3>Garam Masala</h3><p>₹150</p><button onclick="order('Garam Masala')">Order</button></div>
+
+</div>
+
+<h2>Pickles</h2>
+
+<div class="products">
+
+<div class="card"><img src="tomato.jpg"><h3>Tomato Pickle</h3><p>₹280 / 500g</p><button onclick="order('Tomato Pickle')">Order</button></div>
+
+<div class="card"><img src="gongura.jpg"><h3>Gongura Pickle</h3><p>₹330</p><button onclick="order('Gongura Pickle')">Order</button></div>
+
+<div class="card"><img src="ginger.jpg"><h3>Ginger Pickle</h3><p>₹330</p><button onclick="order('Ginger Pickle')">Order</button></div>
+
+<div class="card"><img src="avakaya.jpg"><h3>Avakaya Pickle</h3><p>₹330</p><button onclick="order('Avakaya Pickle')">Order</button></div>
+
+<div class="card"><img src="chicken.jpg"><h3>Chicken Pickle</h3><p>₹640</p><button onclick="order('Chicken Pickle')">Order</button></div>
+
+</div>
+
+<h2>Special Product</h2>
+
+<div class="products">
+
+<div class="card">
+<img src="plant.jpg">
+<h3>Plant Protein Powder</h3>
+<p>₹900 (500g)</p>
+<button onclick="order('Plant Protein Powder')">Order</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+function order(product) {
+    window.open("https://wa.me/91XXXXXXXXXX?text=Hi%20I%20want%20to%20order%20" + product);
+}
+</script>
+
+</body>
+</html>
