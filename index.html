@@ -202,13 +202,10 @@ header {
 <div id="cartItems"></div>
 <h4>Total ₹<span id="total2">0</span></h4>
 
-<!-- ✅ CUSTOMER DETAILS -->
 <div class="formBox">
 <input type="text" id="custName" placeholder="Your Name">
-
 <input type="tel" id="custPhone" placeholder="Phone Number"
 oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')">
-
 <textarea id="custAddress" placeholder="Delivery Address"></textarea>
 </div>
 
@@ -238,8 +235,9 @@ const items = [
 ["plant","Protein Powder",900,"special"]
 ];
 
+/* ✅ CART PERSISTENCE */
+let cart = JSON.parse(localStorage.getItem("cart")) || {};
 let filtered=[...items];
-let cart={};
 
 function render(){
 let html="";
@@ -320,6 +318,9 @@ document.getElementById("miniCart").innerHTML=mini;
 document.getElementById("total").innerText=total;
 document.getElementById("total2").innerText=total;
 document.getElementById("cartBadge").innerText=count;
+
+/* ✅ SAVE CART */
+localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 function toggleCart(){
@@ -375,7 +376,12 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2000);
 }
 
-window.onload=render;
+/* ✅ LOAD CART ON REFRESH */
+window.onload = function(){
+    filtered=[...items];
+    render();
+    updateCart();
+};
 
 </script>
 
