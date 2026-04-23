@@ -7,11 +7,30 @@
 <style>
 body { margin:0; font-family:'Segoe UI',sans-serif; background:#f2f2f2; }
 
+/* HEADER WITH CART */
 header {
     background:#ff6f00;
     color:white;
     padding:15px;
-    text-align:center;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* CART IN HEADER */
+.cartHeader {
+    background:#2e7d32;
+    padding:6px 12px;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+#cartBadge {
+    background:red;
+    border-radius:50%;
+    padding:2px 6px;
+    margin-left:5px;
 }
 
 /* SEARCH */
@@ -44,7 +63,7 @@ header {
     grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
     gap:15px;
     padding:15px;
-    padding-bottom:170px;
+    padding-bottom:100px;
 }
 
 /* CARD */
@@ -61,7 +80,6 @@ header {
     object-fit:cover;
 }
 
-/* Special fix */
 .special img {
     object-fit:contain;
     padding:10px;
@@ -89,40 +107,17 @@ header {
     cursor:pointer;
 }
 
-/* GREEN STATE */
 .addBtn.added {
     background:#43a047 !important;
     color:white !important;
-}
-
-/* CART BAR */
-.cartBar {
-    position:fixed;
-    bottom:10px;
-    left:10px;
-    right:10px;
-    background:#2e7d32;
-    color:white;
-    padding:12px;
-    border-radius:15px;
-    display:flex;
-    justify-content:space-between;
-}
-
-/* BADGE */
-#cartBadge {
-    background:red;
-    border-radius:50%;
-    padding:2px 6px;
-    margin-left:5px;
 }
 
 /* MINI CART */
 .miniCart {
     display:none;
     position:absolute;
-    bottom:50px;
-    left:10px;
+    top:60px;
+    right:10px;
     background:white;
     color:black;
     padding:10px;
@@ -130,7 +125,7 @@ header {
     width:220px;
     box-shadow:0 5px 15px rgba(0,0,0,0.2);
 }
-.cartLeft:hover .miniCart { display:block; }
+.cartHeader:hover .miniCart { display:block; }
 
 /* CART BOX */
 .cartBox {
@@ -170,7 +165,15 @@ header {
 
 <body>
 
-<header>Flavours Of Home 🍲</header>
+<header>
+    <div>Flavours Of Home 🍲</div>
+
+    <!-- ✅ CART MOVED TO HEADER -->
+    <div class="cartHeader" onclick="toggleCart()">
+        🛒 Cart <span id="cartBadge">0</span>
+        <div class="miniCart" id="miniCart"></div>
+    </div>
+</header>
 
 <div class="searchBar">
 <input type="text" placeholder="Search..." onkeyup="searchProducts(this.value)">
@@ -184,15 +187,6 @@ header {
 </div>
 
 <div class="products" id="products"></div>
-
-<!-- CART BAR -->
-<div class="cartBar">
-    <div class="cartLeft" onclick="toggleCart()">
-        🛒 Cart <span id="cartBadge">0</span>
-        <div class="miniCart" id="miniCart"></div>
-    </div>
-    <div>₹<span id="total">0</span></div>
-</div>
 
 <!-- CART BOX -->
 <div class="cartBox" id="cartBox">
@@ -210,7 +204,6 @@ oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')">
 </div>
 
 <button onclick="checkout()">Order on WhatsApp</button>
-
 </div>
 
 <div id="toast"></div>
@@ -235,7 +228,6 @@ const items = [
 ["plant","Protein Powder",900,"special"]
 ];
 
-/* ✅ CART PERSISTENCE */
 let cart = JSON.parse(localStorage.getItem("cart")) || {};
 let filtered=[...items];
 
@@ -315,11 +307,9 @@ mini+=`<div>${i.name} x${i.qty}</div>`;
 
 document.getElementById("cartItems").innerHTML=html;
 document.getElementById("miniCart").innerHTML=mini;
-document.getElementById("total").innerText=total;
 document.getElementById("total2").innerText=total;
 document.getElementById("cartBadge").innerText=count;
 
-/* ✅ SAVE CART */
 localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -354,7 +344,7 @@ let i=cart[k];
 msg+=i.name+" x"+i.qty+" - ₹"+(i.qty*i.price)+"%0A";
 }
 
-msg+="Total: ₹"+document.getElementById("total").innerText;
+msg+="Total: ₹"+document.getElementById("total2").innerText;
 
 window.open("https://wa.me/918978992637?text="+msg);
 }
@@ -376,7 +366,6 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2000);
 }
 
-/* ✅ LOAD CART ON REFRESH */
 window.onload = function(){
     filtered=[...items];
     render();
