@@ -21,7 +21,6 @@ header {
     padding:6px 12px;
     border-radius:20px;
     cursor:pointer;
-    font-size:14px;
 }
 
 #cartBadge {
@@ -38,6 +37,21 @@ header {
     padding:10px;
     border-radius:25px;
     border:1px solid #ccc;
+}
+
+/* CATEGORIES */
+.categories {
+    display:flex;
+    overflow-x:auto;
+    background:white;
+    padding:10px;
+}
+.categories button {
+    margin-right:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:20px;
+    background:#eee;
 }
 
 /* PRODUCTS */
@@ -107,7 +121,7 @@ header {
 }
 .cartHeader:hover .miniCart { display:block; }
 
-/* 🔥 FULL SCREEN CART */
+/* ✅ FULL SCREEN CART ONLY CHANGE */
 .cartBox {
     position:fixed;
     top:0;
@@ -116,18 +130,16 @@ header {
     height:100%;
     background:white;
     padding:20px;
-    transition:0.3s;
     overflow:auto;
     z-index:10000;
-
     transform:translateY(100%);
+    transition:0.3s;
 }
-
 .cartBox.open {
     transform:translateY(0);
 }
 
-/* BIG CLOSE BUTTON */
+/* ✅ BIG CLOSE BUTTON */
 .closeBtn {
     font-size:22px;
     background:none;
@@ -173,12 +185,18 @@ header {
 <input type="text" placeholder="Search..." onkeyup="searchProducts(this.value)">
 </div>
 
+<div class="categories">
+<button onclick="filter('all')">All</button>
+<button onclick="filter('podi')">Powders</button>
+<button onclick="filter('pickle')">Pickles</button>
+<button onclick="filter('special')">Special</button>
+</div>
+
 <div class="products" id="products"></div>
 
 <!-- CART -->
 <div class="cartBox" id="cartBox">
 
-<!-- ✅ BIG BUTTON -->
 <button class="closeBtn" onclick="toggleCart()">⬅ Back</button>
 
 <h3>Your Cart</h3>
@@ -203,6 +221,18 @@ oninput="this.value=this.value.replace(/[^0-9+ ]/g,'')">
 const items = [
 ["putnalu","Putnalu Podi",140,"podi"],
 ["palli","Palli Podi",160,"podi"],
+["nalla","Nalla Podi",160,"podi"],
+["kandi","Kandi Podi",150,"podi"],
+["karivepaku","Karivepaku Podi",130,"podi"],
+["pulihora","Pulihora Mix",140,"podi"],
+["sambar","Sambar Powder",150,"podi"],
+["rasam","Rasam Powder",150,"podi"],
+["garam","Garam Masala",150,"podi"],
+["tomato","Tomato Pickle",280,"pickle"],
+["gongura","Gongura Pickle",330,"pickle"],
+["ginger","Ginger Pickle",330,"pickle"],
+["avakaya","Avakaya Pickle",330,"pickle"],
+["chicken","Chicken Pickle",640,"pickle"],
 ["plant","Protein Powder",900,"special"]
 ];
 
@@ -216,7 +246,7 @@ let cls=i[3]=="special"?"special":"";
 
 html+=`
 <div class="card ${cls}">
-<img src="${i[0]}.jpg">
+<img src="${i[0]}.jpg" onerror="this.src='placeholder.jpg'">
 
 <div class="card-body">
 <h3>${i[1]}</h3>
@@ -286,7 +316,33 @@ document.getElementById("cartBox").classList.toggle("open");
 }
 
 function checkout(){
-alert("Order placed");
+let name=document.getElementById("custName").value;
+let phone=document.getElementById("custPhone").value;
+let addr=document.getElementById("custAddress").value;
+
+if(!name||!phone||!addr){
+alert("Fill all details");
+return;
+}
+
+let msg="Order:%0A";
+msg+="Name: "+name+"%0A";
+msg+="Phone: "+phone+"%0A";
+msg+="Address: "+addr+"%0A%0A";
+
+for(let k in cart){
+let i=cart[k];
+msg+=i.name+" x"+i.qty+" - ₹"+(i.qty*i.price)+"%0A";
+}
+
+msg+="Total: ₹"+document.getElementById("total2").innerText;
+
+window.open("https://wa.me/918978992637?text="+msg);
+}
+
+function filter(type){
+filtered = type=="all" ? [...items] : items.filter(i=>i[3]==type);
+render();
 }
 
 function searchProducts(text){
