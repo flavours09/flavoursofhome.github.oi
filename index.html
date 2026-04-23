@@ -121,7 +121,7 @@ header {
 }
 .cartHeader:hover .miniCart { display:block; }
 
-/* ✅ FULL SCREEN CART ONLY CHANGE */
+/* FULL SCREEN CART */
 .cartBox {
     position:fixed;
     top:0;
@@ -139,7 +139,7 @@ header {
     transform:translateY(0);
 }
 
-/* ✅ BIG CLOSE BUTTON */
+/* BIG CLOSE BUTTON */
 .closeBtn {
     font-size:22px;
     background:none;
@@ -290,6 +290,7 @@ delete cart[id];
 updateCart();
 }
 
+/* ✅ UPDATED CART WITH REMOVE BUTTON */
 function updateCart(){
 let html="",mini="",total=0,count=0;
 
@@ -299,7 +300,14 @@ let sub=i.qty*i.price;
 total+=sub;
 count+=i.qty;
 
-html+=`<div>${i.name} x${i.qty} - ₹${sub}</div>`;
+html+=`<div style="margin-bottom:8px;">
+${i.name} x${i.qty} - ₹${sub}
+<button onclick="removeItem('${k}')" 
+style="margin-left:10px;background:#e53935;color:white;border:none;border-radius:5px;padding:3px 6px;cursor:pointer;">
+❌
+</button>
+</div>`;
+
 mini+=`<div>${i.name} x${i.qty}</div>`;
 }
 
