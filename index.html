@@ -259,6 +259,14 @@ document.getElementById("cartCount").innerText=count+" items";
 
 function removeItem(id){
 delete cart[id];
+
+// 🔹 Reset button UI
+let btn = document.getElementById("btn_" + id);
+if(btn){
+    btn.innerText = "Add";
+    btn.style.background = "#ff6f00";
+}
+
 updateCart();
 showToast("Item removed");
 }
