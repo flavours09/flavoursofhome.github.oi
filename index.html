@@ -19,11 +19,11 @@ header {
     font-size:22px;
 }
 
+/* SEARCH */
 .searchBar {
     padding:10px;
     background:white;
 }
-
 .searchBar input {
     width:100%;
     padding:10px;
@@ -31,13 +31,13 @@ header {
     border:1px solid #ccc;
 }
 
+/* CATEGORIES */
 .categories {
     display:flex;
     overflow-x:auto;
     background:white;
     padding:10px;
 }
-
 .categories button {
     margin-right:10px;
     padding:8px 15px;
@@ -46,12 +46,13 @@ header {
     background:#eee;
 }
 
+/* PRODUCTS */
 .products {
     display:grid;
     grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
     gap:15px;
     padding:15px;
-    padding-bottom:140px; /* ✅ IMPORTANT SPACE */
+    padding-bottom:150px; /* important space */
 }
 
 .card {
@@ -98,24 +99,65 @@ header {
     border-radius:6px;
 }
 
-/* CART BAR */
+/* =========================
+   PREMIUM CART BAR
+========================= */
 .cartBar {
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:#388e3c;
-    color:white;
-    padding:12px;
-    display:flex;
-    justify-content:space-between;
-    transition: transform 0.3s ease;
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+
+    background: linear-gradient(135deg, #1b5e20, #43a047);
+    color: white;
+
+    padding: 14px 16px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+
+    backdrop-filter: blur(10px);
+
+    font-size: 15px;
+    font-weight: 500;
+
+    transition: transform 0.3s ease, opacity 0.3s ease;
+
+    animation: floatBar 3s ease-in-out infinite;
+
+    z-index: 9999;
 }
 
+/* floating effect */
+@keyframes floatBar {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+}
+
+/* hide on scroll */
 .cartBar.hide {
-    transform: translateY(100%);
+    transform: translateY(120%);
+    opacity: 0;
 }
 
-/* CART BOX */
+/* highlight text */
+.cartBar #cartCount {
+    font-weight: 600;
+}
+
+/* right total style */
+.cartBar span:last-child {
+    background: rgba(255,255,255,0.15);
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* CART PANEL */
 .cartBox {
     position:fixed;
     right:-350px;
@@ -127,6 +169,7 @@ header {
     box-shadow:-2px 0 10px gray;
     transition:0.3s;
     overflow:auto;
+    z-index:10000;
 }
 
 .cartBox.open {
@@ -150,7 +193,6 @@ header {
 .formBox {
     margin-top:15px;
 }
-
 .formBox input,
 .formBox textarea {
     width:100%;
@@ -158,6 +200,7 @@ header {
     padding:8px;
 }
 
+/* TOAST */
 #toast {
     position:fixed;
     bottom:100px;
@@ -168,6 +211,7 @@ header {
     padding:12px 20px;
     border-radius:25px;
     display:none;
+    z-index:10000;
 }
 </style>
 </head>
@@ -177,37 +221,39 @@ header {
 <header>Flavours Of Home 🍲</header>
 
 <div class="searchBar">
-    <input type="text" placeholder="Search..." onkeyup="searchProducts(this.value)">
+<input type="text" placeholder="Search..." onkeyup="searchProducts(this.value)">
 </div>
 
 <div class="categories">
-    <button onclick="filter('all')">All</button>
-    <button onclick="filter('podi')">Powders</button>
-    <button onclick="filter('pickle')">Pickles</button>
-    <button onclick="filter('special')">Special</button>
+<button onclick="filter('all')">All</button>
+<button onclick="filter('podi')">Powders</button>
+<button onclick="filter('pickle')">Pickles</button>
+<button onclick="filter('special')">Special</button>
 </div>
 
 <div class="products" id="products"></div>
 
+<!-- PREMIUM CART BAR -->
 <div class="cartBar" onclick="toggleCart()">
-    <span id="cartCount">0 items</span>
-    <span>₹<span id="total">0</span> → View Cart</span>
+    <div id="cartCount">0 items</div>
+    <div>₹<span id="total">0</span> • View Cart →</div>
 </div>
 
+<!-- CART BOX -->
 <div class="cartBox" id="cartBox">
-    <button onclick="toggleCart()" style="position:absolute;top:10px;right:10px;">X</button>
+<button onclick="toggleCart()" style="position:absolute;top:10px;right:10px;">X</button>
 
-    <h3>Your Cart</h3>
-    <div id="cartItems"></div>
-    <h4>Total: ₹<span id="total2">0</span></h4>
+<h3>Your Cart</h3>
+<div id="cartItems"></div>
+<h4>Total: ₹<span id="total2">0</span></h4>
 
-    <div class="formBox">
-        <input type="text" id="custName" placeholder="Your Name">
-        <input type="tel" id="custPhone" placeholder="Phone Number">
-        <textarea id="custAddress" placeholder="Delivery Address"></textarea>
-    </div>
+<div class="formBox">
+<input type="text" id="custName" placeholder="Your Name">
+<input type="tel" id="custPhone" placeholder="Phone Number">
+<textarea id="custAddress" placeholder="Delivery Address"></textarea>
+</div>
 
-    <button onclick="checkout()">Order on WhatsApp</button>
+<button onclick="checkout()">Order on WhatsApp</button>
 </div>
 
 <div id="toast"></div>
@@ -355,7 +401,7 @@ t.style.display="block";
 setTimeout(()=>{t.style.display="none";},2000);
 }
 
-/* ✅ AUTO HIDE CART BAR */
+/* AUTO HIDE CART BAR */
 let lastScroll = 0;
 const cartBar = document.querySelector(".cartBar");
 
@@ -363,9 +409,9 @@ window.addEventListener("scroll", () => {
 let currentScroll = window.pageYOffset;
 
 if (currentScroll > lastScroll) {
-cartBar.classList.add("hide"); // scroll down
+cartBar.classList.add("hide");
 } else {
-cartBar.classList.remove("hide"); // scroll up
+cartBar.classList.remove("hide");
 }
 
 lastScroll = currentScroll;
